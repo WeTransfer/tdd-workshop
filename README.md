@@ -12,5 +12,5 @@ Think of the different scenarios for a given barcode
 ## Stage 2 - Sell Multiple Products
 Introduce one more event that will calculate the total of the previously
 scanned products. Think of different scenarios:
- - Have scanned products before (having sale in progress)
- - Not having any products scanned (no sale in progress)
+ - have scanned products before (having sale in progress)
+ - not having any products scanned (no sale in progress)
