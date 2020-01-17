@@ -57,13 +57,17 @@ class SaleOneItemTest {
 class Sale(private val display: Display) {
 
     fun onBarcode(barcode: String) {
-        if(barcode.isBlank()) {
+        if (barcode.isBlank()) {
             display.setText("Error: barcode is empty")
         } else {
-            when (barcode) {
-                "12345" -> display.setText("$5.50")
-                "23456" -> display.setText("$7.99")
-                else -> display.setText("Product not found for $barcode")
+            val pricesByBarcode = mapOf(
+                "12345" to "$5.50",
+                "23456" to "$7.99"
+            )
+            if (pricesByBarcode.containsKey(barcode)) {
+                display.setText(pricesByBarcode.getValue(barcode))
+            } else {
+                display.setText("Product not found for $barcode")
             }
         }
     }
