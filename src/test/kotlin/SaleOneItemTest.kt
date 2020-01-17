@@ -11,10 +11,12 @@ class SaleOneItemTest {
     @Before
     fun initialize() {
         display = Display()
-        catalog = Catalog(mapOf(
-            "12345" to "$5.50",
-            "23456" to "$7.99"
-        ))
+        catalog = Catalog(
+            mapOf(
+                "12345" to "$5.50",
+                "23456" to "$7.99"
+            )
+        )
         sale = Sale(
             display,
             mapOf(
@@ -66,8 +68,11 @@ class SaleOneItemTest {
     }
 }
 
-class Catalog(pricesByBarcode: Map<String, String>) {
+class Catalog(private val pricesByBarcode: Map<String, String>) {
 
+    fun hasProductFor(barcode: String) = pricesByBarcode.containsKey(barcode)
+
+    fun getPriceFor(barcode: String) = pricesByBarcode.getValue(barcode)
 }
 
 class Sale(
@@ -80,18 +85,14 @@ class Sale(
         if (barcode.isBlank()) {
             display.displayEmptyBarcode()
         } else {
-            if (hasProductFor(barcode)) {
-                val priceAsText = getPriceFor(barcode)
+            if (catalog.hasProductFor(barcode)) {
+                val priceAsText = catalog.getPriceFor(barcode)
                 display.displayPrice(priceAsText)
             } else {
                 display.displayProductNotFound(barcode)
             }
         }
     }
-
-    private fun hasProductFor(barcode: String) = pricesByBarcode.containsKey(barcode)
-
-    private fun getPriceFor(barcode: String) = pricesByBarcode.getValue(barcode)
 }
 
 class Display {
