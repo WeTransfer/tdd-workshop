@@ -14,3 +14,7 @@ Introduce one more event that will calculate the total of the previously
 scanned products. Think of different scenarios:
  - have scanned products before (having sale in progress)
  - not having any products scanned (no sale in progress)
+
+
+## Slides from the workshop
+https://pasteapp.com/p/qKRB5CrGH1c?view=rOJe7fVA7o4
