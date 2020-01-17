@@ -19,13 +19,8 @@ class SaleOneItemTest {
         )
         sale = Sale(
             display,
-            mapOf(
-                "12345" to "$5.50",
-                "23456" to "$7.99"
-            ),
             catalog
         )
-
     }
 
     @Test
@@ -51,7 +46,7 @@ class SaleOneItemTest {
 
     @Test
     fun anotherProductNotFound() {
-        sale = Sale(display, emptyMap(), catalog)
+        sale = Sale(display, catalog)
 
         sale.onBarcode("33333")
 
@@ -60,7 +55,7 @@ class SaleOneItemTest {
 
     @Test
     fun emptyBarcode() {
-        sale = Sale(display, emptyMap(), catalog)
+        sale = Sale(display, catalog)
 
         sale.onBarcode("")
 
@@ -77,20 +72,19 @@ class Catalog(private val pricesByBarcode: Map<String, String>) {
 
 class Sale(
     private val display: Display,
-    private val pricesByBarcode: Map<String, String>,
     private val catalog: Catalog
 ) {
 
     fun onBarcode(barcode: String) {
         if (barcode.isBlank()) {
             display.displayEmptyBarcode()
+            return
+        }
+        if (catalog.hasProductFor(barcode)) {
+            val priceAsText = catalog.getPriceFor(barcode)
+            display.displayPrice(priceAsText)
         } else {
-            if (catalog.hasProductFor(barcode)) {
-                val priceAsText = catalog.getPriceFor(barcode)
-                display.displayPrice(priceAsText)
-            } else {
-                display.displayProductNotFound(barcode)
-            }
+            display.displayProductNotFound(barcode)
         }
     }
 }
@@ -102,19 +96,15 @@ class Display {
         return text
     }
 
-    fun setText(text: String) {
-        this.text = text
-    }
-
     fun displayEmptyBarcode() {
-        setText("Error: barcode is empty")
+        text = "Error: barcode is empty"
     }
 
     fun displayProductNotFound(barcode: String) {
-        setText("Product not found for $barcode")
+        text = "Product not found for $barcode"
     }
 
     fun displayPrice(priceAsText: String) {
-        setText(priceAsText)
+        text = priceAsText
     }
 }
