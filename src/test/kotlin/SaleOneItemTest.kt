@@ -4,18 +4,24 @@ import org.junit.Test
 
 class SaleOneItemTest {
 
+    private lateinit var catalog: Catalog
     private lateinit var display: Display
     private lateinit var sale: Sale
 
     @Before
     fun initialize() {
         display = Display()
+        catalog = Catalog(mapOf(
+            "12345" to "$5.50",
+            "23456" to "$7.99"
+        ))
         sale = Sale(
             display,
             mapOf(
                 "12345" to "$5.50",
                 "23456" to "$7.99"
-            )
+            ),
+            catalog
         )
 
     }
@@ -43,7 +49,7 @@ class SaleOneItemTest {
 
     @Test
     fun anotherProductNotFound() {
-        sale = Sale(display, emptyMap())
+        sale = Sale(display, emptyMap(), catalog)
 
         sale.onBarcode("33333")
 
@@ -52,7 +58,7 @@ class SaleOneItemTest {
 
     @Test
     fun emptyBarcode() {
-        sale = Sale(display, emptyMap())
+        sale = Sale(display, emptyMap(), catalog)
 
         sale.onBarcode("")
 
@@ -60,23 +66,32 @@ class SaleOneItemTest {
     }
 }
 
+class Catalog(pricesByBarcode: Map<String, String>) {
+
+}
+
 class Sale(
     private val display: Display,
-    private val pricesByBarcode: Map<String, String>
+    private val pricesByBarcode: Map<String, String>,
+    private val catalog: Catalog
 ) {
 
     fun onBarcode(barcode: String) {
         if (barcode.isBlank()) {
             display.displayEmptyBarcode()
         } else {
-            if (pricesByBarcode.containsKey(barcode)) {
-                val priceAsText = pricesByBarcode.getValue(barcode)
+            if (hasProductFor(barcode)) {
+                val priceAsText = getPriceFor(barcode)
                 display.displayPrice(priceAsText)
             } else {
                 display.displayProductNotFound(barcode)
             }
         }
     }
+
+    private fun hasProductFor(barcode: String) = pricesByBarcode.containsKey(barcode)
+
+    private fun getPriceFor(barcode: String) = pricesByBarcode.getValue(barcode)
 }
 
 class Display {
