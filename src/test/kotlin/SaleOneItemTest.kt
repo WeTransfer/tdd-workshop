@@ -67,12 +67,13 @@ class Sale(
 
     fun onBarcode(barcode: String) {
         if (barcode.isBlank()) {
-            display.setText("Error: barcode is empty")
+            display.displayEmptyBarcode()
         } else {
             if (pricesByBarcode.containsKey(barcode)) {
-                display.setText(pricesByBarcode.getValue(barcode))
+                val priceAsText = pricesByBarcode.getValue(barcode)
+                display.displayPrice(priceAsText)
             } else {
-                display.setText("Product not found for $barcode")
+                display.displayProductNotFound(barcode)
             }
         }
     }
@@ -87,5 +88,17 @@ class Display {
 
     fun setText(text: String) {
         this.text = text
+    }
+
+    fun displayEmptyBarcode() {
+        setText("Error: barcode is empty")
+    }
+
+    fun displayProductNotFound(barcode: String) {
+        setText("Product not found for $barcode")
+    }
+
+    fun displayPrice(priceAsText: String) {
+        setText(priceAsText)
     }
 }
