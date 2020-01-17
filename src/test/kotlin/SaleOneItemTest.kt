@@ -22,6 +22,16 @@ class SaleOneItemTest {
 
         assertEquals("$7.99", display.getText())
     }
+
+    @Test
+    fun productNotFound() {
+        val display = Display()
+        val sale = Sale(display)
+
+        sale.onBarcode("22222")
+
+        assertEquals("Product not found for 22222", display.getText())
+    }
 }
 
 class Sale(private val display: Display) {
@@ -31,6 +41,7 @@ class Sale(private val display: Display) {
         when (barcode) {
             "12345" -> display.setText("$5.50")
             "23456" -> display.setText("$7.99")
+            else -> display.setText("Product not found for 22222")
         }
     }
 }
