@@ -1,5 +1,4 @@
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Test
 
 class SaleOneItemTest {
@@ -15,7 +14,6 @@ class SaleOneItemTest {
     }
 
     @Test
-    @Ignore
     fun anotherProductFound() {
         val display = Display()
         val sale = Sale(display)
@@ -30,7 +28,10 @@ class Sale(private val display: Display) {
 
     fun onBarcode(barcode: String) {
 
-        display.setText("$5.50")
+        when (barcode) {
+            "12345" -> display.setText("$5.50")
+            "23456" -> display.setText("$7.99")
+        }
     }
 }
 
