@@ -1,13 +1,27 @@
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 
 class SaleOneItemTest {
 
+    private lateinit var display: Display
+    private lateinit var sale: Sale
+
+    @Before
+    fun initialize() {
+        display = Display()
+        sale = Sale(
+            display,
+            mapOf(
+                "12345" to "$5.50",
+                "23456" to "$7.99"
+            )
+        )
+
+    }
+
     @Test
     fun productFound() {
-        val display = Display()
-        val sale = Sale(display)
-
         sale.onBarcode("12345")
 
         assertEquals("$5.50", display.getText())
@@ -15,9 +29,6 @@ class SaleOneItemTest {
 
     @Test
     fun anotherProductFound() {
-        val display = Display()
-        val sale = Sale(display)
-
         sale.onBarcode("23456")
 
         assertEquals("$7.99", display.getText())
@@ -25,9 +36,6 @@ class SaleOneItemTest {
 
     @Test
     fun productNotFound() {
-        val display = Display()
-        val sale = Sale(display)
-
         sale.onBarcode("22222")
 
         assertEquals("Product not found for 22222", display.getText())
@@ -35,8 +43,7 @@ class SaleOneItemTest {
 
     @Test
     fun anotherProductNotFound() {
-        val display = Display()
-        val sale = Sale(display)
+        sale = Sale(display, emptyMap())
 
         sale.onBarcode("33333")
 
@@ -45,8 +52,7 @@ class SaleOneItemTest {
 
     @Test
     fun emptyBarcode() {
-        val display = Display()
-        val sale = Sale(display)
+        sale = Sale(display, emptyMap())
 
         sale.onBarcode("")
 
@@ -54,16 +60,15 @@ class SaleOneItemTest {
     }
 }
 
-class Sale(private val display: Display) {
+class Sale(
+    private val display: Display,
+    private val pricesByBarcode: Map<String, String>
+) {
 
     fun onBarcode(barcode: String) {
         if (barcode.isBlank()) {
             display.setText("Error: barcode is empty")
         } else {
-            val pricesByBarcode = mapOf(
-                "12345" to "$5.50",
-                "23456" to "$7.99"
-            )
             if (pricesByBarcode.containsKey(barcode)) {
                 display.setText(pricesByBarcode.getValue(barcode))
             } else {
