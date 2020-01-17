@@ -42,16 +42,29 @@ class SaleOneItemTest {
 
         assertEquals("Product not found for 33333", display.getText())
     }
+
+    @Test
+    fun emptyBarcode() {
+        val display = Display()
+        val sale = Sale(display)
+
+        sale.onBarcode("")
+
+        assertEquals("Error: barcode is empty", display.getText())
+    }
 }
 
 class Sale(private val display: Display) {
 
     fun onBarcode(barcode: String) {
-
-        when (barcode) {
-            "12345" -> display.setText("$5.50")
-            "23456" -> display.setText("$7.99")
-            else -> display.setText("Product not found for $barcode")
+        if(barcode.isBlank()) {
+            display.setText("Error: barcode is empty")
+        } else {
+            when (barcode) {
+                "12345" -> display.setText("$5.50")
+                "23456" -> display.setText("$7.99")
+                else -> display.setText("Product not found for $barcode")
+            }
         }
     }
 }
